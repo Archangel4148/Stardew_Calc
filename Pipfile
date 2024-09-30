@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 pyqt5 = "*"
+requests = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 
