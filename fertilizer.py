@@ -1,38 +1,38 @@
 import dataclasses
 
+import regex as re
+from PyQt5.QtCore import QByteArray
+from PyQt5.QtGui import QPixmap
 from bs4 import BeautifulSoup
 
-from data_fetcher import scrape_url
+from data_fetcher import DataFetcher
 
 
 def parse_fertilizer_id(fertilizer_id: str):
     return fertilizer_id.replace("_", " ").title()
 
 
-def fertilizer_sort_key(fertilizer):
-    categories = {
-        "fertilizer": 1,
-        "retaining": 5,
-        "speed-gro": 10,
-    }
-    levels = {
-        "no_quality": 1,
-        "basic": 1,
-        "quality": 2,
-        "deluxe": 3,
-        "hyper": 4,
-    }
-    parts = fertilizer.split()
-
-    fertilizer_quality = parts[0] if len(parts) > 1 else "no_quality"
-    fertilizer_type = parts[1] if len(parts) > 1 else parts[0]
-
-    score = categories.get(fertilizer_type, 99) + levels.get(fertilizer_quality, 99)
-
-    return score
+def parse_cost_string(cost: str) -> float | None:
+    # Example cost string: 100g (Spring 15, Year 1+)
+    if cost.strip() in ("", "N/A"):
+        return None
+    else:
+        # Regular expression to extract the cost values
+        match = re.search(r'data-sort-value="(\d+)">(\d+)g', cost)
+        if match:
+            result = float(match.group(2))  # Convert the extracted cost to a float
+            return result
 
 
-def parse_fertilizer_quality_tables(soup: BeautifulSoup) -> dict[str:dict]:
+def extract_growth_rate(description: str) -> float | None:
+    if "growth rate" in description.casefold():
+        match = re.search(r"(\d+)%", description)
+        if match:
+            return 1 + float(match.group(1)) / 100
+    return 1.0
+
+
+def parse_quality_fertilizer_values(soup: BeautifulSoup) -> dict[str:dict[str:dict[str:str]]]:
     """
     Extract data from fertilizer tables
     Args:
@@ -101,68 +101,89 @@ def parse_fertilizer_quality_tables(soup: BeautifulSoup) -> dict[str:dict]:
 
 
 def get_fertilizers():
-    raw_data = scrape_url("https://stardewvalleywiki.com/Fertilizer")
-    fertilizers: list[Fertilizer] = []
-    fertilizer_names: list[str] = []
-    # Get fertilizers and add them to the list
-    for row in raw_data.select("tr"):
-        columns = row.find_all("td")
-        if columns:
-            for col in columns:
-                text = col.get_text(strip=True).casefold()
-                if "fertilizer" in text:
-                    for fertilizer in text.split("•"):
-                        if fertilizer not in fertilizer_names:
-                            fertilizer_names.append(fertilizer)
-    fertilizer_names = [f.title() for f in sorted(fertilizer_names, key=fertilizer_sort_key)]
+    data_fetcher = DataFetcher("https://stardewvalleywiki.com/Fertilizer")
+    table = data_fetcher.raw_data.find('span', {'id': 'Types_of_Fertilizer'}).find_next('table')
+    rows = table.find_all('tr')
 
-    fertilizer_data = parse_fertilizer_quality_tables(raw_data)
+    # Extract data
+    fertilizer_images: list[str] = [row.find_all('td')[0].find('img')['src'] for row in rows[1:]]
+    fertilizer_names: list[str] = [row.find_all('td')[1].text.strip() for row in rows[1:]]
+    fertilizer_descriptions: list[str] = [row.find_all('td')[2].text.strip() for row in rows[1:]]
+    fertilizer_costs: list[float] = [parse_cost_string(row.find_all('td')[4].text) for row in rows[1:]]
+    fertilizer_growth_rates: list[float] = [extract_growth_rate(description) for description in fertilizer_descriptions]
+
+    # Account for regular soil
+    print(fertilizer_images)
+    fertilizer_images.insert(0, "/mediawiki/images/1/15/Gravel_Path.png")
+    fertilizer_names.insert(0, "Normal Soil")
+    fertilizer_descriptions.insert(0, "Does some soil stuff.")
+    fertilizer_costs.insert(0, 0.0)
+    fertilizer_growth_rates.insert(0, 1.0)
+
+    fertilizer_pixmaps: list[QPixmap] = []
+    for image_url in fertilizer_images:
+        response = data_fetcher.get_image_data(image_url)
+        # Convert the image data to QPixmap
+        image_data = QByteArray(response)  # Convert to QByteArray
+        pixmap = QPixmap()
+        pixmap.loadFromData(image_data)  # Load QPixmap from QByteArray
+        fertilizer_pixmaps.append(pixmap)
+
+
+    fertilizer_objects: list[Fertilizer] = []
+
+    quality_fertilizer_data = parse_quality_fertilizer_values(data_fetcher.raw_data)
 
     # Create Fertilizer objects
-    for name in fertilizer_names:
-        if name in fertilizer_data:
-            data = fertilizer_data[name]
-            category = name.split()[1:] if len(name) > 1 else name
-            description = f"Does some fertilizer stuff."
+    for i, name in enumerate(fertilizer_names):
+        # Quality Fertilizer
+        if name in quality_fertilizer_data:
+            data = quality_fertilizer_data[name]
             value_rates_by_level = [data[farming_level]["Average Price"] for farming_level in data]
             silver_rates_by_level = [data[farming_level]["Silver Quality"] for farming_level in data]
             gold_rates_by_level = [data[farming_level]["Gold Quality"] for farming_level in data]
             iridium_rates_by_level = [data[farming_level]["Iridium Quality"] for farming_level in data]
-            growth_rate = 69
 
             obj = Fertilizer(
+                image=fertilizer_pixmaps[i],
                 name=name.title(),
-                category=category,
-                description=description,
+                category=" ".join(name.split()[1:]) if len(name) > 1 else name,
+                description=fertilizer_descriptions[i],
+                cost=fertilizer_costs[i],
                 value_rates_by_farming_level=value_rates_by_level,
                 silver_rate_by_farming_level=silver_rates_by_level,
                 gold_rate_by_farming_level=gold_rates_by_level,
                 iridium_rate_by_farming_level=iridium_rates_by_level,
-                growth_rate=growth_rate
+                growth_rate=fertilizer_growth_rates[i]
             )
-
+        # Other Fertilizer
         else:
             obj = Fertilizer(
-                name=name.title(),
-                category=name.split()[1:] if len(name) > 1 else name,
-                description=f"Does some fertilizer stuff.",
-                value_rates_by_farming_level=[],
-                silver_rate_by_farming_level=[],
-                gold_rate_by_farming_level=[],
-                iridium_rate_by_farming_level=[],
-                growth_rate=69
+                image=fertilizer_pixmaps[i],
+                name=name,
+                category=" ".join(name.split()[1:]) if len(name) > 1 else name,
+                description=fertilizer_descriptions[i],
+                cost=fertilizer_costs[i],
+                # Other fertilizers don't affect value rates
+                value_rates_by_farming_level=[1.0] * 15,
+                silver_rate_by_farming_level=[1.0] * 15,
+                gold_rate_by_farming_level=[1.0] * 15,
+                iridium_rate_by_farming_level=[1.0] * 15,
+                growth_rate=fertilizer_growth_rates[i]
             )
 
-        fertilizers.append(obj)
+        fertilizer_objects.append(obj)
 
-    return fertilizers
+    return fertilizer_objects
 
 
 @dataclasses.dataclass
 class Fertilizer:
+    image: QPixmap
     name: str
     category: str
     description: str
+    cost: float | None
     value_rates_by_farming_level: list[float]
     silver_rate_by_farming_level: list[float]
     gold_rate_by_farming_level: list[float]

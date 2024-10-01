@@ -1,9 +1,10 @@
 import sys
 
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QDataWidgetMapper, QWidget, QApplication
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QPixmap
+from PyQt5.QtWidgets import QWidget, QApplication
 
-from fertilizer import get_fertilizers
+from fertilizer import get_fertilizers, Fertilizer
 from ui.main_window_init import Ui_main_window
 
 
@@ -18,7 +19,7 @@ class MainWindow(QWidget):
         # Table model
         self.model = QStandardItemModel()
         self.ui.crop_table_view.setModel(self.model)
-        self.headers = ["Season", "Day", "Fertilizer"]
+        self.headers = ["Image", "Name", "Description", "Cost", "Growth Rate"]
         self.model.setHorizontalHeaderLabels(self.headers)
 
         # Data Widget Mapper
@@ -32,17 +33,37 @@ class MainWindow(QWidget):
         # selection_model = self.ui.crop_table_view.selectionModel()
         # selection_model.currentRowChanged.connect(self.mapper.setCurrentModelIndex)
 
-        # Data Fetching
-        self.ui.fertilizer_combo_box.addItems([obj.name for obj in get_fertilizers()])
+        self.fertilizers: list[Fertilizer] = get_fertilizers()
+
+        # Populating Settings Panel
+        self.ui.fertilizer_combo_box.addItems([obj.name for obj in self.fertilizers])
 
         self.populate_table()
 
     def populate_table(self):
-        for i in range(10):
-            self.add_row([j * j for j in range(1, len(self.headers) + 1)])
+        for fertilizer in self.fertilizers:
+            self.add_row(
+                [
+                    fertilizer.image,
+                    fertilizer.name,
+                    fertilizer.description,
+                    fertilizer.cost,
+                    fertilizer.growth_rate,
+                ]
+            )
 
     def add_row(self, data: list):
-        row_data = [QStandardItem(str(val)) for val in data]
+        row_data = []
+        for val in data:
+            if isinstance(val, QPixmap):
+                # Create a QStandardItem for the image and set the pixmap
+                image_item = QStandardItem()
+                image_item.setData(val, Qt.DecorationRole)  # Use DecorationRole to store the pixmap
+                image_item.setSizeHint(val.size())  # Set the size hint for the item to match the pixmap size
+                row_data.append(image_item)
+            else:
+                # For other data types, convert to QStandardItem as usual
+                row_data.append(QStandardItem(str(val)))
         self.model.appendRow(row_data)
 
 
