@@ -22,15 +22,15 @@ class MainWindow(QWidget):
         self.model.setHorizontalHeaderLabels(self.headers)
 
         # Data Widget Mapper
-        # self.mapper = QDataWidgetMapper()
-        # self.mapper.setModel(self.model)
-        # self.mapper.addMapping(self.ui.season_combo_box, 0)
-        # self.mapper.addMapping(self.ui.day_spin_box, 1)
-        # self.mapper.addMapping(self.ui.fertilizer_combo_box, 2)
+        self.mapper = QDataWidgetMapper()
+        self.mapper.setModel(self.model)
+        self.mapper.addMapping(self.ui.season_combo_box, 0)
+        self.mapper.addMapping(self.ui.day_spin_box, 1)
+        self.mapper.addMapping(self.ui.fertilizer_combo_box, 2)
 
         # Selection Model
-        # selection_model = self.ui.crop_table_view.selectionModel()
-        # selection_model.currentRowChanged.connect(self.mapper.setCurrentModelIndex)
+        selection_model = self.ui.crop_table_view.selectionModel()
+        selection_model.currentRowChanged.connect(self.mapper.setCurrentModelIndex)
 
         # Data Fetching
         self.ui.fertilizer_combo_box.addItems([obj.name for obj in get_fertilizers()])
