@@ -109,15 +109,14 @@ def get_fertilizers():
     fertilizer_images: list[str] = [row.find_all('td')[0].find('img')['src'] for row in rows[1:]]
     fertilizer_names: list[str] = [row.find_all('td')[1].text.strip() for row in rows[1:]]
     fertilizer_descriptions: list[str] = [row.find_all('td')[2].text.strip() for row in rows[1:]]
-    fertilizer_costs: list[float] = [parse_cost_string(row.find_all('td')[4].text) for row in rows[1:]]
+    fertilizer_costs: list[float|None] = [parse_cost_string(row.find_all('td')[4].text) for row in rows[1:]]
     fertilizer_growth_rates: list[float] = [extract_growth_rate(description) for description in fertilizer_descriptions]
 
     # Account for regular soil
-    print(fertilizer_images)
     fertilizer_images.insert(0, "/mediawiki/images/1/15/Gravel_Path.png")
     fertilizer_names.insert(0, "Normal Soil")
     fertilizer_descriptions.insert(0, "Does some soil stuff.")
-    fertilizer_costs.insert(0, 0.0)
+    fertilizer_costs.insert(0, None)
     fertilizer_growth_rates.insert(0, 1.0)
 
     fertilizer_pixmaps: list[QPixmap] = []

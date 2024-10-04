@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QWidget, QApplication
 
 from fertilizer import get_fertilizers, Fertilizer
 from ui.main_window_init import Ui_main_window
-
+from appearance import apply_dark_theme
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -66,9 +66,12 @@ class MainWindow(QWidget):
                 row_data.append(QStandardItem(str(val)))
         self.model.appendRow(row_data)
 
+        self.ui.crop_table_view.resizeRowsToContents()
+
 
 if __name__ == '__main__':
     app = QApplication([])
+    apply_dark_theme(app)
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
