@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>725</width>
+    <width>750</width>
     <height>590</height>
    </rect>
   </property>
@@ -17,7 +17,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,3">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1">
        <item>
         <spacer name="verticalSpacer_2">
          <property name="orientation">
@@ -30,6 +30,9 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="toggle_layout"/>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,1,0">

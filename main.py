@@ -2,11 +2,12 @@ import sys
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QPixmap
-from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtWidgets import QWidget, QApplication, QHeaderView
 
+from appearance import set_app_font, apply_day_theme, ToggleSwitch, toggle_day_night, apply_cool_night_theme
 from fertilizer import get_fertilizers, Fertilizer
 from ui.main_window_init import Ui_main_window
-from appearance import apply_dark_theme
+
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -16,11 +17,21 @@ class MainWindow(QWidget):
         self.ui = Ui_main_window()
         self.ui.setupUi(self)
 
+        # Add toggle
+        self.toggle_switch = ToggleSwitch()
+        self.ui.toggle_layout.addWidget(self.toggle_switch)
+        self.toggle_switch.clicked.connect(
+            lambda: toggle_day_night(QApplication.instance(), self.toggle_switch.is_checked))
+
         # Table model
         self.model = QStandardItemModel()
         self.ui.crop_table_view.setModel(self.model)
         self.headers = ["Image", "Name", "Description", "Cost", "Growth Rate"]
         self.model.setHorizontalHeaderLabels(self.headers)
+
+        # Stretch the columns to fill the available width
+        header = self.ui.crop_table_view.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Stretch)
 
         # Data Widget Mapper
         # self.mapper = QDataWidgetMapper()
@@ -66,12 +77,15 @@ class MainWindow(QWidget):
                 row_data.append(QStandardItem(str(val)))
         self.model.appendRow(row_data)
 
-        self.ui.crop_table_view.resizeRowsToContents()
+    def resizeEvent(self, event):
+        super().resizeEvent(event)  # Call the base class implementation
+        self.ui.crop_table_view.resizeRowsToContents()  # Adjust row heights based on the new size
 
 
 if __name__ == '__main__':
     app = QApplication([])
-    apply_dark_theme(app)
+    set_app_font(app)
     window = MainWindow()
+    toggle_day_night(app, window.toggle_switch.is_checked)
     window.show()
     sys.exit(app.exec())
