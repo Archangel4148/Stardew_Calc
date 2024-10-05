@@ -171,30 +171,34 @@ class ToggleSwitch(QWidget):
     def __init__(self, parent=None):
         super(ToggleSwitch, self).__init__(parent)
         self.is_checked = False
-        self.setMinimumSize(60, 30)
-        self.setObjectName("day_night_toggle")
+        self.setMinimumSize(60, 40)  # Increased the size to accommodate larger handle
 
     def paintEvent(self, event):
         painter = QPainter(self)
         rect = QRect(0, 0, self.width(), self.height())
         painter.setRenderHint(QPainter.Antialiasing)
 
-        # Draw background
+        # Draw the track (background) - Make it narrower
+        track_height = self.height() // 3  # Track is 1/3 of the widget height
+        track_rect = QRect(0, (self.height() - track_height) // 2, self.width(), track_height)
+
         if self.is_checked:
             painter.setBrush(QColor(76, 175, 80))  # Green when checked
         else:
             painter.setBrush(QColor(200, 200, 200))  # Grey when unchecked
-        painter.drawRoundedRect(rect, 15, 15)
+        painter.drawRoundedRect(track_rect, track_height // 2, track_height // 2)
 
-        # Draw switch
-        switch_rect = QRect(2, 2, self.height() - 4, self.height() - 4)
+        # Draw the handle (slider) - Larger than the track
+        handle_diameter = self.height() - 10  # Make the handle almost the full height
+        handle_rect = QRect(5, (self.height() - handle_diameter) // 2, handle_diameter, handle_diameter)
+
         if self.is_checked:
-            switch_rect.moveRight(self.width() - 2)
+            handle_rect.moveRight(self.width() - 5)
         else:
-            switch_rect.moveLeft(2)
+            handle_rect.moveLeft(5)
 
         painter.setBrush(QColor(255, 255, 255))
-        painter.drawRoundedRect(switch_rect, 10, 10)
+        painter.drawEllipse(handle_rect)  # Using ellipse for a circular handle
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:  # Check if left button is clicked
