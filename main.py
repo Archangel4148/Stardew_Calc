@@ -2,21 +2,20 @@ import sys
 
 from PyQt5.QtCore import Qt, QSettings
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QPixmap
-from PyQt5.QtWidgets import QWidget, QApplication, QHeaderView, QComboBox, QLineEdit, QCheckBox, QSlider
+from PyQt5.QtWidgets import QWidget, QApplication, QHeaderView, QComboBox, QLineEdit, QSlider, QMainWindow
 
 from appearance import set_app_font, apply_day_theme, ToggleSwitch, toggle_day_night, apply_cool_night_theme
 from fertilizer import get_fertilizers, Fertilizer
 from ui.main_window_init import Ui_main_window
 
 
-class MainWindow(QWidget):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
         # Initialize UI
         self.ui = Ui_main_window()
         self.ui.setupUi(self)
-
 
         # Add toggle
         self.toggle_switch = ToggleSwitch()
@@ -28,7 +27,6 @@ class MainWindow(QWidget):
         self.saved_fertilizer: str = ""
         self.settings = QSettings("MyCompany", "StardewCalc")
         self.load_settings()
-
 
         # Apply saved theme
         if self.settings.value("theme", "day") == "night":
@@ -68,6 +66,8 @@ class MainWindow(QWidget):
         self.populate_table()
 
     def populate_table(self):
+        self.model.clear()
+        self.model.setHorizontalHeaderLabels(self.headers)
         for fertilizer in self.fertilizers:
             self.add_row(
                 [
@@ -142,6 +142,7 @@ class MainWindow(QWidget):
         # Save all widget states and settings on close
         self.save_all_settings()
         super().closeEvent(event)
+
 
 if __name__ == '__main__':
     app = QApplication([])
