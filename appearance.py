@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QRect, Qt, pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QFontDatabase, QFont, QPainter, QColor
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QCheckBox
 
 
 def set_app_font(app: QApplication):
@@ -16,9 +16,9 @@ def set_app_font(app: QApplication):
 
 def toggle_day_night(app: QApplication, state:bool):
     if state:
-        apply_day_theme(app)
-    else:
         apply_cool_night_theme(app)
+    else:
+        apply_day_theme(app)
     set_app_font(app)
 
 def apply_day_theme(app: QApplication):
@@ -165,7 +165,7 @@ def apply_cool_night_theme(app: QApplication):
     app.setStyleSheet(cool_night_stylesheet)
 
 
-class ToggleSwitch(QWidget):
+class ToggleSwitch(QCheckBox):
     clicked = pyqtSignal()  # Declare the clicked signal
 
     def __init__(self, parent=None):
