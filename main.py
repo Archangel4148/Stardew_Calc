@@ -118,9 +118,11 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
                 image_item = QStandardItem()
                 image_item.setData(val, Qt.DecorationRole)
                 image_item.setSizeHint(val.size())
-                row_data.append(image_item)
+                item = image_item
             else:
-                row_data.append(QStandardItem(str(val)))
+                item = QStandardItem(str(val))
+            item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+            row_data.append(item)
         self.model.appendRow(row_data)
 
     def update_header_buttons(self, state: bool):
@@ -173,9 +175,13 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
             elif isinstance(widget, QSlider):
                 widget.setValue(self.settings.value(f"{widget_name}_value", 0, type=int))
 
-    def closeEvent(self, event):
+    def showEvent(self, a0):
+        super().showEvent(a0)
+        self.ui.crop_table_view.resizeRowsToContents()
+
+    def closeEvent(self, a0):
         self.save_all_settings()
-        super().closeEvent(event)
+        super().closeEvent(a0)
 
 
 if __name__ == '__main__':

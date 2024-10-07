@@ -61,6 +61,7 @@ class Ui_main_window_widget(object):
         self.verticalLayout.setStretch(3, 1)
         self.big_layout.addLayout(self.verticalLayout)
         self.crop_table_view = QtWidgets.QTableView(main_window_widget)
+        self.crop_table_view.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.crop_table_view.setObjectName("crop_table_view")
         self.crop_table_view.verticalHeader().setVisible(False)
         self.big_layout.addWidget(self.crop_table_view)

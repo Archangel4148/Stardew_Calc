@@ -122,6 +122,9 @@
      </item>
      <item>
       <widget class="QTableView" name="crop_table_view">
+       <property name="sizeAdjustPolicy">
+        <enum>QAbstractScrollArea::AdjustToContents</enum>
+       </property>
        <attribute name="verticalHeaderVisible">
         <bool>false</bool>
        </attribute>
