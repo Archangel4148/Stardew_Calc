@@ -1,27 +1,67 @@
 import sys
 
 from PyQt5.QtCore import Qt, QSettings
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QPixmap
-from PyQt5.QtWidgets import QWidget, QApplication, QHeaderView, QComboBox, QLineEdit, QSlider, QMainWindow
+from PyQt5.QtGui import QPixmap, QIcon, QStandardItemModel, QStandardItem
+from PyQt5.QtWidgets import QApplication, QHeaderView, QComboBox, QLineEdit, QSlider, QWidget
+from qframelesswindow import FramelessWindow, StandardTitleBar
 
 from appearance import set_app_font, apply_day_theme, ToggleSwitch, toggle_day_night, apply_cool_night_theme
 from fertilizer import get_fertilizers, Fertilizer
-from ui.main_window_init import Ui_main_window
+from ui.main_window_widget_init import Ui_main_window_widget as Ui_main_window
 
 
-class MainWindow(QMainWindow):
+class CustomTitleBar(StandardTitleBar):
+    """ Custom title bar with modified buttons """
+
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        # customize the style of title bar items
+        self.titleLabel.setStyleSheet("""
+        
+        """)
+        self.minBtn.setStyleSheet("""
+            TitleBarButton {
+                qproperty-hoverColor: white;
+                qproperty-hoverBackgroundColor: rgb(0, 100, 182);
+                qproperty-pressedColor: white;
+                qproperty-pressedBackgroundColor: rgb(54, 57, 65);
+            }
+        """)
+        self.maxBtn.setStyleSheet("""
+            TitleBarButton {
+                qproperty-hoverColor: white;
+                qproperty-hoverBackgroundColor: rgb(0, 100, 182);
+                qproperty-pressedColor: white;
+                qproperty-pressedBackgroundColor: rgb(54, 57, 65);
+            }
+        """)
+
+
+class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
     def __init__(self):
         super().__init__()
+
+        # Set custom title bar
+        self.setTitleBar(CustomTitleBar(self))
 
         # Initialize UI
         self.ui = Ui_main_window()
         self.ui.setupUi(self)
+
+        self.ui.big_layout.setContentsMargins(0, 21, 0, 0)
+
+        # Set the window icon and title
+        self.setWindowIcon(QIcon("path_to_icon/logo.png"))  # Use an actual path to your icon
+        self.setWindowTitle("Stardew Valley Crop Planner")
 
         # Add toggle
         self.toggle_switch = ToggleSwitch()
         self.ui.toggle_layout.addWidget(self.toggle_switch)
         self.toggle_switch.clicked.connect(
             lambda: toggle_day_night(QApplication.instance(), self.toggle_switch.is_checked))
+        self.toggle_switch.clicked.connect(
+            lambda: self.update_header_buttons(self.toggle_switch.is_checked))
 
         # Load settings
         self.saved_fertilizer: str = ""
@@ -46,20 +86,9 @@ class MainWindow(QMainWindow):
         header = self.ui.crop_table_view.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
 
-        # Data Widget Mapper
-        # self.mapper = QDataWidgetMapper()
-        # self.mapper.setModel(self.model)
-        # self.mapper.addMapping(self.ui.season_combo_box, 0)
-        # self.mapper.addMapping(self.ui.day_spin_box, 1)
-        # self.mapper.addMapping(self.ui.fertilizer_combo_box, 2)
-
-        # Selection Model
-        # selection_model = self.ui.crop_table_view.selectionModel()
-        # selection_model.currentRowChanged.connect(self.mapper.setCurrentModelIndex)
-
         self.fertilizers: list[Fertilizer] = get_fertilizers()
 
-        # Populating Settings Panel
+        # Populate Settings Panel
         self.ui.fertilizer_combo_box.addItems([obj.name for obj in self.fertilizers])
         self.ui.fertilizer_combo_box.setCurrentText(self.saved_fertilizer)
 
@@ -85,17 +114,25 @@ class MainWindow(QMainWindow):
             if isinstance(val, QPixmap):
                 # Create a QStandardItem for the image and set the pixmap
                 image_item = QStandardItem()
-                image_item.setData(val, Qt.DecorationRole)  # Use DecorationRole to store the pixmap
-                image_item.setSizeHint(val.size())  # Set the size hint for the item to match the pixmap size
+                image_item.setData(val, Qt.DecorationRole)
+                image_item.setSizeHint(val.size())
                 row_data.append(image_item)
             else:
-                # For other data types, convert to QStandardItem as usual
                 row_data.append(QStandardItem(str(val)))
         self.model.appendRow(row_data)
 
+    def update_header_buttons(self, state: bool):
+        buttons = [self.titleBar.minBtn, self.titleBar.maxBtn, self.titleBar.closeBtn]
+        if state:
+            for button in buttons:
+                button.setNormalColor(Qt.white)
+        else:
+            for button in buttons:
+                button.setNormalColor(Qt.black)
+
     def resizeEvent(self, event):
-        super().resizeEvent(event)  # Call the base class implementation
-        self.ui.crop_table_view.resizeRowsToContents()  # Adjust row heights based on the new size
+        super().resizeEvent(event)
+        self.ui.crop_table_view.resizeRowsToContents()
 
     def save_all_settings(self):
         # Save toggle state and theme preference
@@ -115,15 +152,12 @@ class MainWindow(QMainWindow):
                 self.settings.setValue(f"{widget_name}_checked", widget.is_checked)
             elif isinstance(widget, QSlider):
                 self.settings.setValue(f"{widget_name}_value", widget.value())
-            # Add more widget types as needed
 
     def load_settings(self):
-        # Restore window geometry and other saved settings
         geometry = self.settings.value("geometry")
         if geometry:
             self.restoreGeometry(geometry)
 
-        # Automatically load all widget states
         for widget in self.findChildren(QWidget):
             widget_name = widget.objectName()
             if isinstance(widget, QComboBox):
@@ -136,10 +170,8 @@ class MainWindow(QMainWindow):
                 widget.is_checked = (self.settings.value(f"{widget_name}_checked", False, type=bool))
             elif isinstance(widget, QSlider):
                 widget.setValue(self.settings.value(f"{widget_name}_value", 0, type=int))
-            # Add more widget types as needed
 
     def closeEvent(self, event):
-        # Save all widget states and settings on close
         self.save_all_settings()
         super().closeEvent(event)
 
@@ -149,5 +181,6 @@ if __name__ == '__main__':
     set_app_font(app)
     window = MainWindow()
     toggle_day_night(app, window.toggle_switch.is_checked)
+    window.update_header_buttons(window.toggle_switch.is_checked)
     window.show()
     sys.exit(app.exec())

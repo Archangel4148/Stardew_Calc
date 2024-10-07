@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QRect, Qt, pyqtSignal, QCoreApplication
+from PyQt5.QtCore import QRect, Qt, pyqtSignal
 from PyQt5.QtGui import QFontDatabase, QFont, QPainter, QColor
-from PyQt5.QtWidgets import QApplication, QWidget, QCheckBox
+from PyQt5.QtWidgets import QApplication, QCheckBox
 
 
 def set_app_font(app: QApplication):
@@ -14,12 +14,14 @@ def set_app_font(app: QApplication):
     else:
         print("Failed to load font:", font_path)
 
-def toggle_day_night(app: QApplication, state:bool):
+
+def toggle_day_night(app: QApplication, state: bool):
     if state:
         apply_cool_night_theme(app)
     else:
         apply_day_theme(app)
     set_app_font(app)
+
 
 def apply_day_theme(app: QApplication):
     stardew_stylesheet = """
@@ -92,6 +94,7 @@ def apply_day_theme(app: QApplication):
 
     """
     app.setStyleSheet(stardew_stylesheet)
+
 
 def apply_cool_night_theme(app: QApplication):
     cool_night_stylesheet = """
