@@ -79,6 +79,8 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         # Table model
         self.model = QStandardItemModel()
         self.ui.crop_table_view.setModel(self.model)
+        self.ui.crop_table_view.setSelectionBehavior(QHeaderView.SelectRows)
+        self.ui.crop_table_view.setSelectionMode(QHeaderView.NoSelection)
         self.headers = ["Image", "Name", "Description", "Cost", "Growth Rate"]
         self.model.setHorizontalHeaderLabels(self.headers)
 
