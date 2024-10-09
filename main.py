@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtCore import Qt, QSettings
 from PyQt5.QtGui import QPixmap, QIcon, QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QApplication, QHeaderView, QComboBox, QLineEdit, QSlider, QWidget
+from PyQt5.QtWidgets import QApplication, QHeaderView, QComboBox, QLineEdit, QSlider, QWidget, QLabel
 from qframelesswindow import FramelessWindow, StandardTitleBar
 
 from appearance import set_app_font, apply_day_theme, ToggleSwitch, toggle_day_night, apply_cool_night_theme
@@ -57,7 +57,7 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
 
         # Add toggle
         self.toggle_switch = ToggleSwitch()
-        self.ui.toggle_layout.addWidget(self.toggle_switch)
+        self.ui.toggle_layout.addRow(QLabel("Day/Night"), self.toggle_switch)
         self.toggle_switch.clicked.connect(
             lambda: toggle_day_night(QApplication.instance(), self.toggle_switch.is_checked))
         self.toggle_switch.clicked.connect(

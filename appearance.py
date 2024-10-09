@@ -174,37 +174,39 @@ class ToggleSwitch(QCheckBox):
     def __init__(self, parent=None):
         super(ToggleSwitch, self).__init__(parent)
         self.is_checked = False
-        self.setMinimumSize(60, 40)  # Increased the size to accommodate larger handle
+        self.night_mode = False  # Default to day mode
+        self.setFixedSize(60, 40)
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        rect = QRect(0, 0, self.width(), self.height())
         painter.setRenderHint(QPainter.Antialiasing)
 
-        # Draw the track (background) - Make it narrower
-        track_height = self.height() // 3  # Track is 1/3 of the widget height
+        # Draw the track (background) based on the current mode
+        track_height = self.height() // 3
         track_rect = QRect(0, (self.height() - track_height) // 2, self.width(), track_height)
 
         if self.is_checked:
-            painter.setBrush(QColor(76, 175, 80))  # Green when checked
+            painter.setBrush(QColor(90, 90, 126))  # Cool green when checked (night)
         else:
-            painter.setBrush(QColor(200, 200, 200))  # Grey when unchecked
+            painter.setBrush(QColor(193, 154, 107))  # Warm light brown when unchecked (day)
+
         painter.drawRoundedRect(track_rect, track_height // 2, track_height // 2)
 
-        # Draw the handle (slider) - Larger than the track
-        handle_diameter = self.height() - 10  # Make the handle almost the full height
+        # Draw the handle (slider)
+        handle_diameter = self.height() - 18
         handle_rect = QRect(5, (self.height() - handle_diameter) // 2, handle_diameter, handle_diameter)
 
         if self.is_checked:
             handle_rect.moveRight(self.width() - 5)
+            painter.setBrush(QColor(255, 255, 255))  # White handle (night)
         else:
             handle_rect.moveLeft(5)
+            painter.setBrush(QColor(249, 215, 164))  # Light wood-like handle (day)
 
-        painter.setBrush(QColor(255, 255, 255))
-        painter.drawEllipse(handle_rect)  # Using ellipse for a circular handle
+        painter.drawEllipse(handle_rect)
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:  # Check if left button is clicked
+        if event.button() == Qt.LeftButton:
             self.is_checked = not self.is_checked
             self.update()  # Trigger repaint
             self.clicked.emit()
