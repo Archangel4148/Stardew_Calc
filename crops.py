@@ -1,5 +1,7 @@
-from data_fetcher import DataFetcher
 from bs4 import BeautifulSoup
+
+from data_fetcher import DataFetcher
+
 
 def get_crops():
     data_fetcher = DataFetcher("https://stardewvalleywiki.com/Crops")
@@ -23,16 +25,30 @@ def get_crops():
             continue
 
         table_data = [row.text.strip().split("\n") for row in rows[1:]]
-        print("=============\n", crop_name, "\n", [[sub_data for sub_data in data if sub_data.replace("\t", "").replace("\n", "")] for data in table_data if data])
-        for row in rows[1:]:
-            cols = row.find_all('td')
-            if len(cols) == len(headers):  # Check if the number of columns matches
-                crop_data = {}
-                for header, col in zip(headers, cols):
-                    crop_data[header] = col.text.strip()  # Extract text and remove extra spaces
-                crops.append(crop_data)
+        clean_data = [[sub_data for sub_data in data if sub_data.replace("\t", "").replace("\n", "")] for data in
+                      table_data if data]
+        is_edible = not "Inedible" in clean_data[0]
+        multiple_rarities = len(clean_data[0]) == 16 if is_edible else len(clean_data[0]) == 7
+        usable = "used in" in [header.casefold() for header in headers]
+        seed_name = clean_data[0][0]
+        purchase_source = clean_data[0][1]
+        sell_prices = clean_data[0][2:6] if multiple_rarities else [clean_data[0][2]]
+        if is_edible:
+            # edible + rare = 16
+            if usable:
+                energy_values = clean_data[0][-9:-1:2]
+                health_values = clean_data[0][-8:-1:2]
+            else:
+                energy_values = clean_data[0][-8:-1:2]
+                health_values = clean_data[0][-7:len(clean_data[0]):2]
+        else:
+            # inedible + rare = 7
+            energy_values = "None"
+            health_values = "None"
 
-    return crops
+        # print("========\n", crop_name, f"\nEdible: {is_edible}\n", clean_data)
+        print(f"=============\n{crop_name}\nSeed: {seed_name}\nEdible: {is_edible}\nMultiple Rarities: {multiple_rarities}\nUsable: {usable}\nPurchase Source: {purchase_source}\nSell Prices: {sell_prices}\nEnergy Values: {energy_values}\nHealth Values: {health_values}")
+
 
 if __name__ == '__main__':
     crops = get_crops()
