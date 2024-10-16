@@ -1,7 +1,6 @@
 import dataclasses
 
 import regex as re
-from PyQt5.QtCore import QByteArray
 from PyQt5.QtGui import QPixmap
 from bs4 import BeautifulSoup
 
@@ -109,7 +108,7 @@ def get_fertilizers():
     fertilizer_images: list[str] = [row.find_all('td')[0].find('img')['src'] for row in rows[1:]]
     fertilizer_names: list[str] = [row.find_all('td')[1].text.strip() for row in rows[1:]]
     fertilizer_descriptions: list[str] = [row.find_all('td')[2].text.strip() for row in rows[1:]]
-    fertilizer_costs: list[float|None] = [parse_cost_string(row.find_all('td')[4].text) for row in rows[1:]]
+    fertilizer_costs: list[float | None] = [parse_cost_string(row.find_all('td')[4].text) for row in rows[1:]]
     fertilizer_growth_rates: list[float] = [extract_growth_rate(description) for description in fertilizer_descriptions]
 
     # Account for regular soil
@@ -122,12 +121,7 @@ def get_fertilizers():
     fertilizer_pixmaps: list[QPixmap] = []
     for image_url in fertilizer_images:
         response = data_fetcher.get_image_data(image_url)
-        # Convert the image data to QPixmap
-        image_data = QByteArray(response)  # Convert to QByteArray
-        pixmap = QPixmap()
-        pixmap.loadFromData(image_data)  # Load QPixmap from QByteArray
-        fertilizer_pixmaps.append(pixmap)
-
+        fertilizer_pixmaps.append(response)
 
     fertilizer_objects: list[Fertilizer] = []
 

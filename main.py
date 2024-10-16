@@ -1,11 +1,14 @@
+import json
+import os
 import sys
 
-from PyQt5.QtCore import Qt, QSettings
-from PyQt5.QtGui import QPixmap, QIcon, QStandardItemModel, QStandardItem
+from PyQt5.QtCore import Qt, QSettings, QSortFilterProxyModel
+from PyQt5.QtGui import QPixmap, QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QApplication, QHeaderView, QComboBox, QLineEdit, QSlider, QWidget, QLabel
 from qframelesswindow import FramelessWindow, StandardTitleBar
 
 from appearance import set_app_font, apply_day_theme, ToggleSwitch, toggle_day_night, apply_cool_night_theme
+from crops import get_crops, Crop, check_and_download_images
 from fertilizer import get_fertilizers, Fertilizer
 from ui.main_window_widget_init import Ui_main_window_widget as Ui_main_window
 
@@ -39,6 +42,9 @@ class CustomTitleBar(StandardTitleBar):
 
 
 class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
+
+    OFFLINE_MODE = False
+
     def __init__(self):
         super().__init__()
 
@@ -52,7 +58,6 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         self.ui.big_layout.setContentsMargins(0, 21, 0, 0)
 
         # Set the window icon and title
-        self.setWindowIcon(QIcon("path_to_icon/logo.png"))  # Use an actual path to your icon
         self.setWindowTitle("Stardew Valley Crop Planner")
 
         # Add toggle
@@ -78,39 +83,72 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
 
         # Table model
         self.model = QStandardItemModel()
-        self.ui.crop_table_view.setModel(self.model)
+
+        # Create a proxy model
+        self.proxy_model = QSortFilterProxyModel(self)
+        self.proxy_model.setSourceModel(self.model)
+
+        self.ui.crop_table_view.setModel(self.proxy_model)
         self.ui.crop_table_view.setSelectionBehavior(QHeaderView.SelectRows)
         self.ui.crop_table_view.setSelectionMode(QHeaderView.NoSelection)
-        self.headers = ["Image", "Name", "Description", "Cost", "Growth Rate"]
+        self.headers = ["Crop Image", "Crop Name", "Seed Name", "Edible", "Purchase Sources", "Sell Price",
+                        "Energy Value", "Health Value"]
         self.model.setHorizontalHeaderLabels(self.headers)
 
         # Stretch the columns to fill the available width
         header = self.ui.crop_table_view.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
 
-        self.fertilizers: list[Fertilizer] = get_fertilizers()
+        # Connect header click signal to sorting function
+        header.sectionClicked.connect(self.handle_header_click)
 
-        # Populate Settings Panel
-        self.ui.fertilizer_combo_box.addItems([obj.name for obj in self.fertilizers])
-        self.ui.fertilizer_combo_box.setCurrentText(self.saved_fertilizer)
+        if not self.OFFLINE_MODE:
+            # Get data from wiki
+            self.crops: list[Crop] = get_crops()
+            self.fertilizers: list[Fertilizer] = get_fertilizers()
 
-        self.populate_table()
+            # Check and download images
+            check_and_download_images(self.crops, "https://stardewvalleywiki.com/")
+
+            # Load from QSettings
+            # Populate Settings Panel
+            self.ui.fertilizer_combo_box.addItems([obj.name for obj in self.fertilizers])
+            self.ui.fertilizer_combo_box.setCurrentText(self.saved_fertilizer)
+
+            self.populate_table()
+
+        else:
+            self.load_table_data()
+
+    def handle_header_click(self, section):
+        """Sort table based on header click."""
+        # Toggle sort order between ascending and descending
+        self.current_sort_order = (
+            Qt.AscendingOrder if self.proxy_model.sortOrder() == Qt.DescendingOrder
+            else Qt.DescendingOrder
+        )
+        self.proxy_model.sort(section, self.current_sort_order)
 
     def populate_table(self):
         self.model.clear()
         self.model.setHorizontalHeaderLabels(self.headers)
-        for fertilizer in self.fertilizers:
+        for i, crop in enumerate(self.crops):
+            image_path = os.path.join("local_images", crop.image_name)
             self.add_row(
                 [
-                    fertilizer.image,
-                    fertilizer.name,
-                    fertilizer.description,
-                    str(fertilizer.cost).replace(".0", "gp"),
-                    fertilizer.growth_rate,
-                ]
+                    QPixmap(image_path),
+                    crop.name,
+                    crop.seed_name,
+                    crop.edible,
+                    crop.purchase_sources,
+                    crop.sell_prices,
+                    crop.energy_values_by_rarity,
+                    crop.health_values_by_rarity
+                ],
+                image_path
             )
 
-    def add_row(self, data: list):
+    def add_row(self, data: list, local_path: str):
         row_data = []
         for val in data:
             if isinstance(val, QPixmap):
@@ -118,7 +156,9 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
                 image_item = QStandardItem()
                 image_item.setData(val, Qt.DecorationRole)
                 image_item.setSizeHint(val.size())
+                image_item.setTextAlignment(Qt.AlignCenter)
                 item = image_item
+                item.setData(local_path, Qt.UserRole)
             else:
                 item = QStandardItem(str(val))
             item.setFlags(item.flags() & ~Qt.ItemIsEditable)
@@ -175,12 +215,43 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
             elif isinstance(widget, QSlider):
                 widget.setValue(self.settings.value(f"{widget_name}_value", 0, type=int))
 
+    def save_table_data(self):
+        # Prepare data for saving
+        crops_data = []
+        for row in range(self.model.rowCount()):
+            row_data = []
+            for column in range(self.model.columnCount()):
+                item = self.model.item(row, column)
+                if item:
+                    if column == 0:  # For images, you might want to save a file path or identifier
+                        row_data.append(item.data(Qt.UserRole))  # Placeholder, adjust accordingly
+                    else:
+                        row_data.append(item.text())
+            crops_data.append(row_data)
+
+        # Save to QSettings
+        self.settings.setValue("crops_data", json.dumps(crops_data))
+
+    def load_table_data(self):
+        # Load from QSettings
+        crops_data_json = self.settings.value("crops_data", "[]", type=str)
+        crops_data = json.loads(crops_data_json)
+        if crops_data:
+            # Clear the current model and populate with loaded data
+            self.model.clear()
+            self.model.setHorizontalHeaderLabels(self.headers)
+            for row_data in crops_data:
+                image_path = row_data[0]
+                row_data[0] = QPixmap(image_path)
+                self.add_row(row_data, local_path=image_path)
+
     def showEvent(self, a0):
         super().showEvent(a0)
         self.ui.crop_table_view.resizeRowsToContents()
 
     def closeEvent(self, a0):
         self.save_all_settings()
+        self.save_table_data()
         super().closeEvent(a0)
 
 
