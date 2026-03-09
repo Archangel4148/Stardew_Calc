@@ -91,6 +91,7 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         # Create a proxy model
         self.proxy_model = CropFilterProxyModel(self)
         self.proxy_model.setSourceModel(self.model)
+        self.proxy_model.setSortRole(Qt.UserRole + 2)
 
         self.ui.crop_table_view.setModel(self.proxy_model)
         self.ui.crop_table_view.setSelectionBehavior(QHeaderView.SelectRows)
@@ -198,18 +199,25 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
             if crop.regrowth_days is not None:
                 growth_days_str += f" (Regrows in {crop.regrowth_days})"
             purchase_locations.update(crop.purchase_sources)
+
+            def safe_get_first(data):
+                try:
+                    return next(iter(data))
+                except (TypeError, StopIteration):
+                    return None
+
             self.add_row(
                 [
-                    QPixmap(image_path),
-                    crop.name,
-                    crop.seed_name,
-                    crop.growing_season,
-                    growth_days_str,
-                    crop.edible,
-                    crop.purchase_sources,
-                    crop.sell_prices,
-                    crop.energy_values_by_rarity,
-                    crop.health_values_by_rarity
+                    (QPixmap(image_path), None),
+                    (crop.name, crop.name),
+                    (crop.seed_name, crop.seed_name),
+                    (crop.growing_season, crop.growing_season),
+                    (growth_days_str, crop.growth_days),
+                    (crop.edible, crop.edible),
+                    (crop.purchase_sources, safe_get_first(list(crop.purchase_sources.keys()))),
+                    (crop.sell_prices, safe_get_first(crop.sell_prices)),
+                    (crop.energy_values_by_rarity, safe_get_first(crop.energy_values_by_rarity)),
+                    (crop.health_values_by_rarity, safe_get_first(crop.health_values_by_rarity))
                 ],
                 image_path,
                 crop
@@ -224,9 +232,9 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         combo_box.addItem("Any")
         combo_box.addItems(sorted(locations))
 
-    def add_row(self, data: list, local_path: str, crop: Crop):
+    def add_row(self, data: list[tuple], local_path: str, crop: Crop):
         row_data = []
-        for val in data:
+        for (val, sort_val) in data:
             if isinstance(val, QPixmap):
                 # Create a QStandardItem for the image and set the pixmap
                 image_item = QStandardItem()
@@ -239,6 +247,8 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
                 item = QStandardItem(str(val))
             item.setFlags(item.flags() & ~Qt.ItemIsEditable)
             item.setData(crop, Qt.UserRole + 1)
+            item.setData(sort_val, Qt.UserRole + 2)
+
             row_data.append(item)
         self.model.appendRow(row_data)
 
@@ -294,10 +304,6 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
                 widget.is_checked = (self.settings.value(f"{widget_name}_checked", False, type=bool))
             elif isinstance(widget, QSlider) or isinstance(widget, QSpinBox):
                 widget.setValue(self.settings.value(f"{widget_name}_value", 0, type=int))
-
-    def showEvent(self, a0):
-        super().showEvent(a0)
-        self.ui.crop_table_view.resizeRowsToContents()
 
     def closeEvent(self, a0):
         self.save_all_settings()
