@@ -1,5 +1,6 @@
 import dataclasses
 import os
+import typing
 
 import requests
 from PyQt5.QtCore import QSortFilterProxyModel, Qt
@@ -25,6 +26,12 @@ class Crop:
     growth_days: int
     regrowth_days: int | None
 
+    def to_dict(self) -> dict:
+        return dataclasses.asdict(self)
+    
+    @classmethod
+    def from_dict(cls, data) -> typing.Self:
+        return cls(**data)
 
 def get_crops() -> list[Crop]:
     data_fetcher = DataFetcher("https://stardewvalleywiki.com/Crops")
@@ -178,10 +185,10 @@ class CropFilterProxyModel(QSortFilterProxyModel):
         if self.edible_filter is not None and crop.edible != self.edible_filter:
             return False
 
-        if self.regrow_filter is not None and self.regrow_filter != (crop.regrowth_days is None):
+        if self.regrow_filter is not None and self.regrow_filter == (crop.regrowth_days is None):
             return False
 
-        if self.regrow_filter and crop.regrowth_days > self.regrow_day_filter:
+        if self.regrow_filter and (crop.regrowth_days is not None) and crop.regrowth_days > self.regrow_day_filter:
             return False
 
         return True

@@ -1,4 +1,6 @@
 import dataclasses
+from pathlib import Path
+import typing
 
 import regex as re
 from PyQt5.QtGui import QPixmap
@@ -138,7 +140,7 @@ def get_fertilizers():
             iridium_rates_by_level = [data[farming_level]["Iridium Quality"] for farming_level in data]
 
             obj = Fertilizer(
-                image=fertilizer_pixmaps[i],
+                image_path=fertilizer_images[i],
                 name=name.title(),
                 category=" ".join(name.split()[1:]) if len(name) > 1 else name,
                 description=fertilizer_descriptions[i],
@@ -152,7 +154,7 @@ def get_fertilizers():
         # Other Fertilizer
         else:
             obj = Fertilizer(
-                image=fertilizer_pixmaps[i],
+                image_path=fertilizer_images[i],
                 name=name,
                 category=" ".join(name.split()[1:]) if len(name) > 1 else name,
                 description=fertilizer_descriptions[i],
@@ -172,7 +174,7 @@ def get_fertilizers():
 
 @dataclasses.dataclass
 class Fertilizer:
-    image: QPixmap
+    image_path: Path
     name: str
     category: str
     description: str
@@ -182,3 +184,10 @@ class Fertilizer:
     gold_rate_by_farming_level: list[float]
     iridium_rate_by_farming_level: list[float]
     growth_rate: float
+
+    def to_dict(self) -> dict:
+        return dataclasses.asdict(self)
+    
+    @classmethod
+    def from_dict(cls, data) -> typing.Self:
+        return cls(**data)

@@ -1,11 +1,12 @@
 import json
 import os
+from pathlib import Path
 import sys
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QSettings, QSortFilterProxyModel
 from PyQt5.QtGui import QPixmap, QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QApplication, QHeaderView, QComboBox, QLineEdit, QSlider, QWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QHeaderView, QComboBox, QLineEdit, QSlider, QSpinBox, QWidget, QLabel
 from qframelesswindow import FramelessWindow, StandardTitleBar
 
 from appearance import set_app_font, apply_day_theme, ToggleSwitch, toggle_day_night, apply_cool_night_theme
@@ -40,7 +41,10 @@ class CustomTitleBar(StandardTitleBar):
 
 
 class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
-    OFFLINE_MODE = False
+    OFFLINE_MODE = True
+    DATA_DIR = Path("local_data")
+    CROP_CACHE = DATA_DIR /"crop_cache.json"
+    FERTILIZER_CACHE = DATA_DIR /"fertilizer_cache.json"
 
     def __init__(self):
         super().__init__()
@@ -111,7 +115,7 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         header.sectionClicked.connect(self.handle_header_click)
 
         # Connect regrow day spin box visibility updates
-        self.toggle_regrow_day_visibility(self.ui.regrow_combo_box.currentText() == "Yes")
+        self.toggle_regrow_day_visibility(self.ui.regrow_combo_box.currentText())
         self.ui.regrow_combo_box.currentTextChanged.connect(self.toggle_regrow_day_visibility)
 
         # Connect filter updates
@@ -128,28 +132,38 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
             self.crops: list[Crop] = get_crops()
             self.fertilizers: list[Fertilizer] = get_fertilizers()
 
+            # Cache data objects for offline use
+            os.makedirs(self.DATA_DIR, exist_ok=True)
+            with open(self.CROP_CACHE, "w") as f:
+                json.dump([c.to_dict() for c in self.crops], f, indent=2)
+            with open(self.FERTILIZER_CACHE, "w") as f:
+                json.dump([c.to_dict() for c in self.fertilizers], f, indent=2)
+
             # Check and download images
             check_and_download_images(self.crops, "https://stardewvalleywiki.com/")
-
-            # Load from QSettings
-            # Populate Settings Panel
-            self.ui.fertilizer_combo_box.addItems([obj.name for obj in self.fertilizers])
-            self.ui.fertilizer_combo_box.setCurrentText(self.saved_fertilizer)
-            self.populate_table()
-            self.ui.store_combo_box.setCurrentText(self.saved_store)
-            self.update_filters()
-
         else:
-            self.load_table_data()
+            # Load cached crop data
+            with open(self.CROP_CACHE) as f:
+                crop_data = json.load(f)
+            self.crops = [Crop.from_dict(c) for c in crop_data]
+
+            # Load fertilizer data
+            with open(self.FERTILIZER_CACHE) as f:
+                fertilizer_data = json.load(f)
+            self.fertilizers = [Fertilizer.from_dict(c) for c in fertilizer_data]
+
+        # Populate Settings Panel
+        self.ui.fertilizer_combo_box.addItems([obj.name for obj in self.fertilizers])
+        self.ui.fertilizer_combo_box.setCurrentText(self.saved_fertilizer)
+        self.populate_table()
+        self.ui.store_combo_box.setCurrentText(self.saved_store)
+        self.update_filters()
 
     def handle_header_click(self, section):
         """Sort table based on header click."""
         # Toggle sort order between ascending and descending
-        self.current_sort_order = (
-            Qt.AscendingOrder if self.proxy_model.sortOrder() == Qt.DescendingOrder
-            else Qt.DescendingOrder
-        )
-        self.proxy_model.sort(section, self.current_sort_order)
+        order = self.proxy_model.sortOrder()
+        self.proxy_model.sort(section, Qt.DescendingOrder if order == Qt.AscendingOrder else Qt.AscendingOrder)
 
     def update_filters(self):
         self.proxy_model.store_filter = self.ui.store_combo_box.currentText()
@@ -164,7 +178,7 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
             self.proxy_model.edible_filter = edible_text == "Yes"
 
         regrow_text = self.ui.regrow_combo_box.currentText()
-        if edible_text == "Any":
+        if regrow_text == "Any":
             self.proxy_model.regrow_filter = None
         else:
             self.proxy_model.regrow_filter = regrow_text == "Yes"
@@ -176,15 +190,14 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
     def populate_table(self):
         self.model.clear()
         self.model.setHorizontalHeaderLabels(self.headers)
-        purchase_locations = []
-        for i, crop in enumerate(self.crops):
+        purchase_locations = set()
+
+        for crop in self.crops:
             image_path = os.path.join("local_images", crop.image_name)
             growth_days_str = f"{crop.growth_days}"
             if crop.regrowth_days is not None:
                 growth_days_str += f" (Regrows in {crop.regrowth_days})"
-            for store in crop.purchase_sources:
-                if store not in purchase_locations:
-                    purchase_locations.append(store)
+            purchase_locations.update(crop.purchase_sources)
             self.add_row(
                 [
                     QPixmap(image_path),
@@ -202,6 +215,8 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
                 crop
             )
         self.populate_purchase_locations(purchase_locations)
+
+        self.ui.crop_table_view.resizeRowsToContents()
 
     def populate_purchase_locations(self, locations: list[str]):
         combo_box = self.ui.store_combo_box
@@ -241,10 +256,6 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         self.ui.regrow_day_spin_box.setVisible(regrow)
         self.ui.regrow_day_label.setVisible(regrow)
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.ui.crop_table_view.resizeRowsToContents()
-
     def save_all_settings(self):
         # Save toggle state and theme preference
         self.settings.setValue("theme", "night" if self.toggle_switch.is_checked else "day")
@@ -261,7 +272,7 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
                 self.settings.setValue(f"{widget_name}_text", widget.text())
             elif isinstance(widget, ToggleSwitch):
                 self.settings.setValue(f"{widget_name}_checked", widget.is_checked)
-            elif isinstance(widget, QSlider):
+            elif isinstance(widget, QSlider) or isinstance(widget, QSpinBox):
                 self.settings.setValue(f"{widget_name}_value", widget.value())
 
     def load_settings(self):
@@ -281,41 +292,8 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
                 widget.setText(self.settings.value(f"{widget_name}_text", ""))
             elif isinstance(widget, ToggleSwitch):
                 widget.is_checked = (self.settings.value(f"{widget_name}_checked", False, type=bool))
-            elif isinstance(widget, QSlider):
+            elif isinstance(widget, QSlider) or isinstance(widget, QSpinBox):
                 widget.setValue(self.settings.value(f"{widget_name}_value", 0, type=int))
-
-    def save_table_data(self):
-        # Prepare data for saving
-        crops_data = []
-        for row in range(self.model.rowCount()):
-            row_data = []
-            for column in range(self.model.columnCount()):
-                item = self.model.item(row, column)
-                if item:
-                    if column == 0:  # For images, you might want to save a file path or identifier
-                        row_data.append(item.data(Qt.UserRole))  # Placeholder, adjust accordingly
-                    else:
-                        row_data.append(item.text())
-            crops_data.append(row_data)
-
-        # Save to QSettings
-        self.settings.setValue("crops_data", json.dumps(crops_data))
-
-    def load_table_data(self):
-        # Load from QSettings
-        crops_data_json = self.settings.value("crops_data", "[]", type=str)
-        crops_data = json.loads(crops_data_json)
-        if crops_data:
-            # Clear the current model and populate with loaded data
-            self.model.clear()
-            self.model.setHorizontalHeaderLabels(self.headers)
-            crop_lookup = {crop.name: crop for crop in self.crops}
-            for row_data in crops_data:
-                image_path = row_data[0]
-                row_data[0] = QPixmap(image_path)
-                crop_name = row_data[1]
-                crop_obj = crop_lookup.get(crop_name)
-                self.add_row(row_data, local_path=image_path, crop=crop_obj)
 
     def showEvent(self, a0):
         super().showEvent(a0)
@@ -323,9 +301,7 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
 
     def closeEvent(self, a0):
         self.save_all_settings()
-        self.save_table_data()
         super().closeEvent(a0)
-
 
 if __name__ == '__main__':
     app = QApplication([])

@@ -1,0 +1,1441 @@
+[
+  {
+    "image_path": "/mediawiki/images/2/2f/Blue_Jazz.png",
+    "image_name": "blue_jazz.png",
+    "name": "Blue Jazz",
+    "seed_name": "Jazz Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 30,
+      "JojaMart": 37
+    },
+    "sell_prices": [
+      50,
+      62,
+      75,
+      100
+    ],
+    "energy_values_by_rarity": [
+      45,
+      63,
+      81,
+      117
+    ],
+    "health_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "growing_season": "Spring",
+    "growth_days": 7,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/c/c3/Carrot.png",
+    "image_name": "carrot.png",
+    "name": "Carrot",
+    "seed_name": "Carrot Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": false,
+    "purchase_sources": {},
+    "sell_prices": [
+      35,
+      43,
+      52,
+      70
+    ],
+    "energy_values_by_rarity": [
+      75,
+      105,
+      135,
+      195
+    ],
+    "health_values_by_rarity": [
+      33,
+      47,
+      60,
+      87
+    ],
+    "growing_season": "Spring",
+    "growth_days": 3,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/a/aa/Cauliflower.png",
+    "image_name": "cauliflower.png",
+    "name": "Cauliflower",
+    "seed_name": "Cauliflower Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 80,
+      "JojaMart": 100
+    },
+    "sell_prices": [
+      175,
+      218,
+      262,
+      350
+    ],
+    "energy_values_by_rarity": [
+      75,
+      105,
+      135,
+      195
+    ],
+    "health_values_by_rarity": [
+      33,
+      47,
+      60,
+      87
+    ],
+    "growing_season": "Spring",
+    "growth_days": 12,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/3/33/Coffee_Bean.png",
+    "image_name": "coffee_bean.png",
+    "name": "Coffee Bean",
+    "seed_name": "Coffee Bean",
+    "edible": false,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Traveling Cart": 2500
+    },
+    "sell_prices": [
+      15,
+      18,
+      22,
+      30
+    ],
+    "energy_values_by_rarity": null,
+    "health_values_by_rarity": null,
+    "growing_season": "Spring",
+    "growth_days": 10,
+    "regrowth_days": 2
+  },
+  {
+    "image_path": "/mediawiki/images/c/cc/Garlic.png",
+    "image_name": "garlic.png",
+    "name": "Garlic",
+    "seed_name": "Garlic Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 40
+    },
+    "sell_prices": [
+      60,
+      75,
+      90,
+      120
+    ],
+    "energy_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "health_values_by_rarity": [
+      9,
+      12,
+      16,
+      23
+    ],
+    "growing_season": "Spring",
+    "growth_days": 4,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/5/5c/Green_Bean.png",
+    "image_name": "green_bean.png",
+    "name": "Green Bean",
+    "seed_name": "Bean Starter",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 60,
+      "JojaMart": 75
+    },
+    "sell_prices": [
+      40,
+      50,
+      60,
+      80
+    ],
+    "energy_values_by_rarity": [
+      25,
+      35,
+      45,
+      65
+    ],
+    "health_values_by_rarity": [
+      11,
+      15,
+      20,
+      29
+    ],
+    "growing_season": "Spring",
+    "growth_days": 10,
+    "regrowth_days": 3
+  },
+  {
+    "image_path": "/mediawiki/images/d/d1/Kale.png",
+    "image_name": "kale.png",
+    "name": "Kale",
+    "seed_name": "Kale Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 70,
+      "JojaMart": 87
+    },
+    "sell_prices": [
+      110,
+      137,
+      165,
+      220
+    ],
+    "energy_values_by_rarity": [
+      50,
+      70,
+      90,
+      130
+    ],
+    "health_values_by_rarity": [
+      22,
+      31,
+      40,
+      58
+    ],
+    "growing_season": "Spring",
+    "growth_days": 6,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/d/db/Parsnip.png",
+    "image_name": "parsnip.png",
+    "name": "Parsnip",
+    "seed_name": "Parsnip Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 20,
+      "JojaMart": 25
+    },
+    "sell_prices": [
+      35,
+      43,
+      52,
+      70
+    ],
+    "energy_values_by_rarity": [
+      25,
+      35,
+      45,
+      65
+    ],
+    "health_values_by_rarity": [
+      11,
+      15,
+      20,
+      29
+    ],
+    "growing_season": "Spring",
+    "growth_days": 4,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/c/c2/Potato.png",
+    "image_name": "potato.png",
+    "name": "Potato",
+    "seed_name": "Potato Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 50,
+      "JojaMart": 62
+    },
+    "sell_prices": [
+      80,
+      100,
+      120,
+      160
+    ],
+    "energy_values_by_rarity": [
+      25,
+      35,
+      45,
+      65
+    ],
+    "health_values_by_rarity": [
+      11,
+      15,
+      20,
+      29
+    ],
+    "growing_season": "Spring",
+    "growth_days": 6,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/6/6e/Rhubarb.png",
+    "image_name": "rhubarb.png",
+    "name": "Rhubarb",
+    "seed_name": "Rhubarb Seeds",
+    "edible": false,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Oasis": 100
+    },
+    "sell_prices": [
+      220,
+      275,
+      330,
+      440
+    ],
+    "energy_values_by_rarity": null,
+    "health_values_by_rarity": null,
+    "growing_season": "Spring",
+    "growth_days": 13,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/6/6d/Strawberry.png",
+    "image_name": "strawberry.png",
+    "name": "Strawberry",
+    "seed_name": "Strawberry Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Egg Festival": 100
+    },
+    "sell_prices": [
+      120,
+      150,
+      180,
+      240
+    ],
+    "energy_values_by_rarity": [
+      50,
+      70,
+      90,
+      130
+    ],
+    "health_values_by_rarity": [
+      22,
+      31,
+      40,
+      58
+    ],
+    "growing_season": "Spring",
+    "growth_days": 8,
+    "regrowth_days": 4
+  },
+  {
+    "image_path": "/mediawiki/images/c/cf/Tulip.png",
+    "image_name": "tulip.png",
+    "name": "Tulip",
+    "seed_name": "Tulip Bulb",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 20,
+      "JojaMart": 25
+    },
+    "sell_prices": [
+      30,
+      37,
+      45,
+      60
+    ],
+    "energy_values_by_rarity": [
+      45,
+      63,
+      81,
+      117
+    ],
+    "health_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "growing_season": "Spring",
+    "growth_days": 6,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/f/fe/Unmilled_Rice.png",
+    "image_name": "unmilled_rice.png",
+    "name": "Unmilled Rice",
+    "seed_name": "Rice Shoot",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 40
+    },
+    "sell_prices": [
+      30,
+      37,
+      45,
+      60
+    ],
+    "energy_values_by_rarity": [
+      3,
+      4,
+      5,
+      7
+    ],
+    "health_values_by_rarity": [
+      1,
+      1,
+      2,
+      3
+    ],
+    "growing_season": "Spring",
+    "growth_days": 8,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/9/9e/Blueberry.png",
+    "image_name": "blueberry.png",
+    "name": "Blueberry",
+    "seed_name": "Blueberry Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 80
+    },
+    "sell_prices": [
+      50,
+      62,
+      75,
+      100
+    ],
+    "energy_values_by_rarity": [
+      25,
+      35,
+      45,
+      65
+    ],
+    "health_values_by_rarity": [
+      11,
+      15,
+      20,
+      29
+    ],
+    "growing_season": "Summer",
+    "growth_days": 13,
+    "regrowth_days": 4
+  },
+  {
+    "image_path": "/mediawiki/images/f/f8/Corn.png",
+    "image_name": "corn.png",
+    "name": "Corn",
+    "seed_name": "Corn Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 150,
+      "JojaMart": 187
+    },
+    "sell_prices": [
+      50,
+      62,
+      75,
+      100
+    ],
+    "energy_values_by_rarity": [
+      25,
+      35,
+      45,
+      65
+    ],
+    "health_values_by_rarity": [
+      11,
+      15,
+      20,
+      29
+    ],
+    "growing_season": "Summer",
+    "growth_days": 14,
+    "regrowth_days": 4
+  },
+  {
+    "image_path": "/mediawiki/images/5/59/Hops.png",
+    "image_name": "hops.png",
+    "name": "Hops",
+    "seed_name": "Hops Starter",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 60,
+      "JojaMart": 75
+    },
+    "sell_prices": [
+      25,
+      31,
+      37,
+      50
+    ],
+    "energy_values_by_rarity": [
+      45,
+      63,
+      81,
+      117
+    ],
+    "health_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "growing_season": "Summer",
+    "growth_days": 11,
+    "regrowth_days": 1
+  },
+  {
+    "image_path": "/mediawiki/images/f/f1/Hot_Pepper.png",
+    "image_name": "hot_pepper.png",
+    "name": "Hot Pepper",
+    "seed_name": "Pepper Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 40,
+      "JojaMart": 50
+    },
+    "sell_prices": [
+      40,
+      50,
+      60,
+      80
+    ],
+    "energy_values_by_rarity": [
+      13,
+      18,
+      23,
+      33
+    ],
+    "health_values_by_rarity": [
+      5,
+      8,
+      10,
+      14
+    ],
+    "growing_season": "Summer",
+    "growth_days": 5,
+    "regrowth_days": 3
+  },
+  {
+    "image_path": "/mediawiki/images/1/19/Melon.png",
+    "image_name": "melon.png",
+    "name": "Melon",
+    "seed_name": "Melon Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 80,
+      "JojaMart": 100
+    },
+    "sell_prices": [
+      250,
+      312,
+      375,
+      500
+    ],
+    "energy_values_by_rarity": [
+      113,
+      158,
+      203,
+      293
+    ],
+    "health_values_by_rarity": [
+      50,
+      71,
+      91,
+      131
+    ],
+    "growing_season": "Summer",
+    "growth_days": 12,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/3/37/Poppy.png",
+    "image_name": "poppy.png",
+    "name": "Poppy",
+    "seed_name": "Poppy Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 100,
+      "JojaMart": 125
+    },
+    "sell_prices": [
+      140,
+      175,
+      210,
+      280
+    ],
+    "energy_values_by_rarity": [
+      45,
+      63,
+      81,
+      117
+    ],
+    "health_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "growing_season": "Summer",
+    "growth_days": 7,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/d/d5/Radish.png",
+    "image_name": "radish.png",
+    "name": "Radish",
+    "seed_name": "Radish Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 40,
+      "JojaMart": 50
+    },
+    "sell_prices": [
+      90,
+      112,
+      135,
+      180
+    ],
+    "energy_values_by_rarity": [
+      45,
+      63,
+      81,
+      117
+    ],
+    "health_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "growing_season": "Summer",
+    "growth_days": 6,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/2/2d/Red_Cabbage.png",
+    "image_name": "red_cabbage.png",
+    "name": "Red Cabbage",
+    "seed_name": "Red Cabbage Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 100
+    },
+    "sell_prices": [
+      260,
+      325,
+      390,
+      520
+    ],
+    "energy_values_by_rarity": [
+      75,
+      105,
+      135,
+      195
+    ],
+    "health_values_by_rarity": [
+      33,
+      47,
+      60,
+      87
+    ],
+    "growing_season": "Summer",
+    "growth_days": 9,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/thumb/a/a5/Stardrop.png/24px-Stardrop.png",
+    "image_name": "starfruit.png",
+    "name": "Starfruit",
+    "seed_name": "Starfruit Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Oasis": 400
+    },
+    "sell_prices": [
+      750,
+      937,
+      1125,
+      1500
+    ],
+    "energy_values_by_rarity": [
+      125,
+      175,
+      225,
+      325
+    ],
+    "health_values_by_rarity": [
+      56,
+      78,
+      101,
+      146
+    ],
+    "growing_season": "Summer",
+    "growth_days": 13,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/9/9f/Summer_Spangle.png",
+    "image_name": "summer_spangle.png",
+    "name": "Summer Spangle",
+    "seed_name": "Spangle Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 50,
+      "JojaMart": 62
+    },
+    "sell_prices": [
+      90,
+      112,
+      135,
+      180
+    ],
+    "energy_values_by_rarity": [
+      45,
+      63,
+      81,
+      117
+    ],
+    "health_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "growing_season": "Summer",
+    "growth_days": 8,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/4/43/Summer_Squash.png",
+    "image_name": "summer_squash.png",
+    "name": "Summer Squash",
+    "seed_name": "Summer Squash Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": false,
+    "purchase_sources": {},
+    "sell_prices": [
+      45,
+      56,
+      67,
+      90
+    ],
+    "energy_values_by_rarity": [
+      63,
+      88,
+      113,
+      163
+    ],
+    "health_values_by_rarity": [
+      28,
+      39,
+      50,
+      73
+    ],
+    "growing_season": "Summer",
+    "growth_days": 6,
+    "regrowth_days": 3
+  },
+  {
+    "image_path": "/mediawiki/images/8/81/Sunflower.png",
+    "image_name": "sunflower.png",
+    "name": "Sunflower",
+    "seed_name": "Sunflower Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 200,
+      "JojaMart": 125
+    },
+    "sell_prices": [
+      80,
+      100,
+      120,
+      160
+    ],
+    "energy_values_by_rarity": [
+      45,
+      63,
+      81,
+      117
+    ],
+    "health_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "growing_season": "Summer",
+    "growth_days": 8,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/9/9d/Tomato.png",
+    "image_name": "tomato.png",
+    "name": "Tomato",
+    "seed_name": "Tomato Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 50,
+      "JojaMart": 62
+    },
+    "sell_prices": [
+      60,
+      75,
+      90,
+      120
+    ],
+    "energy_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "health_values_by_rarity": [
+      9,
+      12,
+      16,
+      23
+    ],
+    "growing_season": "Summer",
+    "growth_days": 11,
+    "regrowth_days": 4
+  },
+  {
+    "image_path": "/mediawiki/images/e/e2/Wheat.png",
+    "image_name": "wheat.png",
+    "name": "Wheat",
+    "seed_name": "Wheat Seeds",
+    "edible": false,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 10,
+      "JojaMart": 12
+    },
+    "sell_prices": [
+      25,
+      31,
+      37,
+      50
+    ],
+    "energy_values_by_rarity": null,
+    "health_values_by_rarity": null,
+    "growing_season": "Summer",
+    "growth_days": 4,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/f/f6/Amaranth.png",
+    "image_name": "amaranth.png",
+    "name": "Amaranth",
+    "seed_name": "Amaranth Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 70,
+      "JojaMart": 87
+    },
+    "sell_prices": [
+      150,
+      187,
+      225,
+      300
+    ],
+    "energy_values_by_rarity": [
+      50,
+      70,
+      90,
+      130
+    ],
+    "health_values_by_rarity": [
+      22,
+      31,
+      40,
+      58
+    ],
+    "growing_season": "Fall",
+    "growth_days": 7,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/d/dd/Artichoke.png",
+    "image_name": "artichoke.png",
+    "name": "Artichoke",
+    "seed_name": "Artichoke Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 30
+    },
+    "sell_prices": [
+      160,
+      200,
+      240,
+      320
+    ],
+    "energy_values_by_rarity": [
+      30,
+      42,
+      54,
+      78
+    ],
+    "health_values_by_rarity": [
+      13,
+      18,
+      24,
+      35
+    ],
+    "growing_season": "Fall",
+    "growth_days": 8,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/a/a4/Beet.png",
+    "image_name": "beet.png",
+    "name": "Beet",
+    "seed_name": "Beet Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Oasis": 20
+    },
+    "sell_prices": [
+      100,
+      125,
+      150,
+      200
+    ],
+    "energy_values_by_rarity": [
+      30,
+      42,
+      54,
+      78
+    ],
+    "health_values_by_rarity": [
+      13,
+      18,
+      24,
+      35
+    ],
+    "growing_season": "Fall",
+    "growth_days": 6,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/4/40/Bok_Choy.png",
+    "image_name": "bok_choy.png",
+    "name": "Bok Choy",
+    "seed_name": "Bok Choy Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 50,
+      "JojaMart": 62
+    },
+    "sell_prices": [
+      80,
+      100,
+      120,
+      160
+    ],
+    "energy_values_by_rarity": [
+      25,
+      35,
+      45,
+      65
+    ],
+    "health_values_by_rarity": [
+      11,
+      15,
+      20,
+      29
+    ],
+    "growing_season": "Fall",
+    "growth_days": 4,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/f/f1/Broccoli.png",
+    "image_name": "broccoli.png",
+    "name": "Broccoli",
+    "seed_name": "Broccoli Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": false,
+    "purchase_sources": {},
+    "sell_prices": [
+      70,
+      87,
+      105,
+      140
+    ],
+    "energy_values_by_rarity": [
+      63,
+      88,
+      113,
+      163
+    ],
+    "health_values_by_rarity": [
+      28,
+      39,
+      50,
+      73
+    ],
+    "growing_season": "Fall",
+    "growth_days": 8,
+    "regrowth_days": 4
+  },
+  {
+    "image_path": "/mediawiki/images/6/6e/Cranberries.png",
+    "image_name": "cranberries.png",
+    "name": "Cranberries",
+    "seed_name": "Cranberry Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 240,
+      "JojaMart": 300
+    },
+    "sell_prices": [
+      75,
+      93,
+      112,
+      150
+    ],
+    "energy_values_by_rarity": [
+      38,
+      53,
+      68,
+      98
+    ],
+    "health_values_by_rarity": [
+      17,
+      23,
+      30,
+      44
+    ],
+    "growing_season": "Fall",
+    "growth_days": 7,
+    "regrowth_days": 5
+  },
+  {
+    "image_path": "/mediawiki/images/8/8f/Eggplant.png",
+    "image_name": "eggplant.png",
+    "name": "Eggplant",
+    "seed_name": "Eggplant Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 20,
+      "JojaMart": 25
+    },
+    "sell_prices": [
+      60,
+      75,
+      90,
+      120
+    ],
+    "energy_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "health_values_by_rarity": [
+      9,
+      12,
+      16,
+      23
+    ],
+    "growing_season": "Fall",
+    "growth_days": 5,
+    "regrowth_days": 5
+  },
+  {
+    "image_path": "/mediawiki/images/5/5c/Fairy_Rose.png",
+    "image_name": "fairy_rose.png",
+    "name": "Fairy Rose",
+    "seed_name": "Fairy Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 200,
+      "JojaMart": 250
+    },
+    "sell_prices": [
+      290,
+      362,
+      435,
+      580
+    ],
+    "energy_values_by_rarity": [
+      45,
+      63,
+      81,
+      117
+    ],
+    "health_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "growing_season": "Fall",
+    "growth_days": 12,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/c/c2/Grape.png",
+    "image_name": "grape.png",
+    "name": "Grape",
+    "seed_name": "Grape Starter",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 60,
+      "JojaMart": 75
+    },
+    "sell_prices": [
+      80,
+      100,
+      120,
+      160
+    ],
+    "energy_values_by_rarity": [
+      38,
+      53,
+      68,
+      98
+    ],
+    "health_values_by_rarity": [
+      17,
+      23,
+      30,
+      44
+    ],
+    "growing_season": "Fall",
+    "growth_days": 10,
+    "regrowth_days": 3
+  },
+  {
+    "image_path": "/mediawiki/images/6/64/Pumpkin.png",
+    "image_name": "pumpkin.png",
+    "name": "Pumpkin",
+    "seed_name": "Pumpkin Seeds",
+    "edible": false,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 100,
+      "JojaMart": 125
+    },
+    "sell_prices": [
+      320,
+      400,
+      480,
+      640
+    ],
+    "energy_values_by_rarity": null,
+    "health_values_by_rarity": null,
+    "growing_season": "Fall",
+    "growth_days": 13,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/5/52/Yam.png",
+    "image_name": "yam.png",
+    "name": "Yam",
+    "seed_name": "Yam Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Pierre's": 60,
+      "JojaMart": 75
+    },
+    "sell_prices": [
+      160,
+      200,
+      240,
+      320
+    ],
+    "energy_values_by_rarity": [
+      45,
+      63,
+      81,
+      117
+    ],
+    "health_values_by_rarity": [
+      20,
+      28,
+      36,
+      52
+    ],
+    "growing_season": "Fall",
+    "growth_days": 10,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/a/aa/Powdermelon.png",
+    "image_name": "powdermelon.png",
+    "name": "Powdermelon",
+    "seed_name": "Powdermelon Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": false,
+    "purchase_sources": {},
+    "sell_prices": [
+      60,
+      75,
+      90,
+      120
+    ],
+    "energy_values_by_rarity": [
+      63,
+      88,
+      113,
+      163
+    ],
+    "health_values_by_rarity": [
+      28,
+      39,
+      50,
+      73
+    ],
+    "growing_season": "Winter",
+    "growth_days": 7,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/0/01/Ancient_Fruit.png",
+    "image_name": "ancient_fruit.png",
+    "name": "Ancient Fruit",
+    "seed_name": "Ancient Seeds",
+    "edible": false,
+    "multiple_rarities": true,
+    "used_in_recipe": false,
+    "purchase_sources": {},
+    "sell_prices": [
+      550,
+      687,
+      825,
+      1100
+    ],
+    "energy_values_by_rarity": null,
+    "health_values_by_rarity": null,
+    "growing_season": "Special",
+    "growth_days": 28,
+    "regrowth_days": 7
+  },
+  {
+    "image_path": "/mediawiki/images/3/32/Cactus_Fruit.png",
+    "image_name": "cactus_fruit.png",
+    "name": "Cactus Fruit",
+    "seed_name": "Cactus Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {
+      "Oasis": 150
+    },
+    "sell_prices": [
+      75,
+      93,
+      112,
+      150
+    ],
+    "energy_values_by_rarity": [
+      75,
+      105,
+      135,
+      195
+    ],
+    "health_values_by_rarity": [
+      33,
+      47,
+      60,
+      87
+    ],
+    "growing_season": "Special",
+    "growth_days": 12,
+    "regrowth_days": 3
+  },
+  {
+    "image_path": "/mediawiki/images/4/45/Fiber.png",
+    "image_name": "fiber.png",
+    "name": "Fiber",
+    "seed_name": "Fiber Seeds",
+    "edible": false,
+    "multiple_rarities": false,
+    "used_in_recipe": true,
+    "purchase_sources": {},
+    "sell_prices": [
+      1
+    ],
+    "energy_values_by_rarity": null,
+    "health_values_by_rarity": null,
+    "growing_season": "Special",
+    "growth_days": 7,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/f/fb/Pineapple.png",
+    "image_name": "pineapple.png",
+    "name": "Pineapple",
+    "seed_name": "Pineapple Seeds",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {},
+    "sell_prices": [
+      300,
+      375,
+      450,
+      600
+    ],
+    "energy_values_by_rarity": [
+      138,
+      193,
+      248,
+      358
+    ],
+    "health_values_by_rarity": [
+      62,
+      86,
+      111,
+      161
+    ],
+    "growing_season": "Special",
+    "growth_days": 14,
+    "regrowth_days": 7
+  },
+  {
+    "image_path": "/mediawiki/images/0/01/Taro_Root.png",
+    "image_name": "taro_root.png",
+    "name": "Taro Root",
+    "seed_name": "Taro Tuber",
+    "edible": true,
+    "multiple_rarities": true,
+    "used_in_recipe": true,
+    "purchase_sources": {},
+    "sell_prices": [
+      100,
+      125,
+      150,
+      200
+    ],
+    "energy_values_by_rarity": [
+      38,
+      53,
+      68,
+      98
+    ],
+    "health_values_by_rarity": [
+      17,
+      23,
+      30,
+      44
+    ],
+    "growing_season": "Special",
+    "growth_days": 10,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/8/88/Sweet_Gem_Berry.png",
+    "image_name": "sweet_gem_berry.png",
+    "name": "Sweet Gem Berry",
+    "seed_name": "Rare Seed",
+    "edible": false,
+    "multiple_rarities": true,
+    "used_in_recipe": false,
+    "purchase_sources": {
+      "Traveling Cart": 1000
+    },
+    "sell_prices": [
+      3000,
+      3750,
+      4500,
+      6000
+    ],
+    "energy_values_by_rarity": null,
+    "health_values_by_rarity": null,
+    "growing_season": "Special",
+    "growth_days": 24,
+    "regrowth_days": null
+  },
+  {
+    "image_path": "/mediawiki/images/5/5b/Tea_Leaves.png",
+    "image_name": "tea_leaves.png",
+    "name": "Tea Leaves",
+    "seed_name": "Tea Sapling",
+    "edible": false,
+    "multiple_rarities": false,
+    "used_in_recipe": true,
+    "purchase_sources": {},
+    "sell_prices": [
+      50
+    ],
+    "energy_values_by_rarity": null,
+    "health_values_by_rarity": null,
+    "growing_season": "Special",
+    "growth_days": 20,
+    "regrowth_days": 1
+  }
+]
