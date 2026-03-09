@@ -155,6 +155,9 @@ class CropFilterProxyModel(QSortFilterProxyModel):
         self.season_filter = "Any"
         self.fertilizer_filter = "Normal Soil"
         self.day_filter = 1
+        self.edible_filter = None
+        self.regrow_filter = None
+        self.regrow_day_filter = 1
 
     def filterAcceptsRow(self, row, parent):
         model = self.sourceModel()
@@ -170,6 +173,15 @@ class CropFilterProxyModel(QSortFilterProxyModel):
                 return False
 
         if crop.growth_days > self.day_filter:
+            return False
+
+        if self.edible_filter is not None and crop.edible != self.edible_filter:
+            return False
+
+        if self.regrow_filter is not None and self.regrow_filter != (crop.regrowth_days is None):
+            return False
+
+        if self.regrow_filter and crop.regrowth_days > self.regrow_day_filter:
             return False
 
         return True

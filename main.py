@@ -110,11 +110,18 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         # Connect header click signal to sorting function
         header.sectionClicked.connect(self.handle_header_click)
 
+        # Connect regrow day spin box visibility updates
+        self.toggle_regrow_day_visibility(self.ui.regrow_combo_box.currentText() == "Yes")
+        self.ui.regrow_combo_box.currentTextChanged.connect(self.toggle_regrow_day_visibility)
+
         # Connect filter updates
         self.ui.store_combo_box.currentTextChanged.connect(self.update_filters)
         self.ui.season_combo_box.currentTextChanged.connect(self.update_filters)
         self.ui.fertilizer_combo_box.currentTextChanged.connect(self.update_filters)
-        self.ui.day_spin_box.textChanged.connect(self.update_filters)
+        self.ui.day_spin_box.valueChanged.connect(self.update_filters)
+        self.ui.edible_combo_box.currentTextChanged.connect(self.update_filters)
+        self.ui.regrow_combo_box.currentTextChanged.connect(self.update_filters)
+        self.ui.regrow_day_spin_box.valueChanged.connect(self.update_filters)
 
         if not self.OFFLINE_MODE:
             # Get data from wiki
@@ -149,6 +156,20 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         self.proxy_model.season_filter = self.ui.season_combo_box.currentText()
         self.proxy_model.fertilizer_filter = self.ui.fertilizer_combo_box.currentText()
         self.proxy_model.day_filter = self.ui.day_spin_box.value()
+
+        edible_text = self.ui.edible_combo_box.currentText()
+        if edible_text == "Any":
+            self.proxy_model.edible_filter = None
+        else:
+            self.proxy_model.edible_filter = edible_text == "Yes"
+
+        regrow_text = self.ui.regrow_combo_box.currentText()
+        if edible_text == "Any":
+            self.proxy_model.regrow_filter = None
+        else:
+            self.proxy_model.regrow_filter = regrow_text == "Yes"
+
+        self.proxy_model.regrow_day_filter = self.ui.regrow_day_spin_box.value()
 
         self.proxy_model.invalidateFilter()
 
@@ -214,6 +235,11 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         else:
             for button in buttons:
                 button.setNormalColor(Qt.black)
+
+    def toggle_regrow_day_visibility(self, text: str):
+        regrow = text == "Yes"
+        self.ui.regrow_day_spin_box.setVisible(regrow)
+        self.ui.regrow_day_label.setVisible(regrow)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

@@ -121,6 +121,84 @@
          <item row="3" column="1">
           <widget class="QComboBox" name="store_combo_box"/>
          </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="fertilizer_label_3">
+           <property name="text">
+            <string>Edible?</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="fertilizer_label_4">
+           <property name="text">
+            <string>Regrows?</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="regrow_day_label">
+           <property name="text">
+            <string>Max Regrow Days:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QSpinBox" name="regrow_day_spin_box">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>28</number>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QComboBox" name="edible_combo_box">
+           <item>
+            <property name="text">
+             <string>Any</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Yes</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>No</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QComboBox" name="regrow_combo_box">
+           <item>
+            <property name="text">
+             <string>Any</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Yes</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>No</string>
+            </property>
+           </item>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
