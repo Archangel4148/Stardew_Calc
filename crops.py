@@ -2,6 +2,7 @@ import dataclasses
 import os
 
 import requests
+from PyQt5.QtCore import QSortFilterProxyModel, Qt
 from bs4 import BeautifulSoup
 
 from data_fetcher import DataFetcher
@@ -64,7 +65,8 @@ def get_crops() -> list[Crop]:
                 if ":" in item:
                     shop_name += f" {item}"
                 elif ">" in item:
-                    purchase_sources[shop_name.strip()] = int(item.split(">")[-1][:-1].replace(",", ""))
+                    purchase_sources[shop_name.strip().replace(":", "")] = int(
+                        item.split(">")[-1][:-1].replace(",", ""))
                     shop_name = ""
                 else:
                     shop_name += f" {item}"
@@ -143,6 +145,34 @@ def download_image(url, save_path):
             file.write(response.content)
     except requests.RequestException as e:
         print(f"Error downloading image: {e}")
+
+
+class CropFilterProxyModel(QSortFilterProxyModel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.store_filter = "Any"
+        self.season_filter = "Any"
+        self.fertilizer_filter = "Normal Soil"
+        self.day_filter = 1
+
+    def filterAcceptsRow(self, row, parent):
+        model = self.sourceModel()
+        index = model.index(row, 0, parent)
+        crop = model.data(index, Qt.UserRole + 1)
+
+        if self.season_filter != "Any":
+            if crop.growing_season != self.season_filter:
+                return False
+
+        if self.store_filter != "Any":
+            if self.store_filter not in crop.purchase_sources.keys():
+                return False
+
+        if crop.growth_days > self.day_filter:
+            return False
+
+        return True
 
 
 if __name__ == '__main__':

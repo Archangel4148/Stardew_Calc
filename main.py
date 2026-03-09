@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QApplication, QHeaderView, QComboBox, QLineEdit, QSl
 from qframelesswindow import FramelessWindow, StandardTitleBar
 
 from appearance import set_app_font, apply_day_theme, ToggleSwitch, toggle_day_night, apply_cool_night_theme
-from crops import get_crops, Crop, check_and_download_images
+from crops import get_crops, Crop, check_and_download_images, CropFilterProxyModel
 from fertilizer import get_fertilizers, Fertilizer
 from ui.main_window_widget_init import Ui_main_window_widget as Ui_main_window
 
@@ -69,6 +69,7 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
 
         # Load settings
         self.saved_fertilizer: str = ""
+        self.saved_store: str = ""
         self.settings = QSettings("MyCompany", "StardewCalc")
         self.load_settings()
 
@@ -84,7 +85,7 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         self.model = QStandardItemModel()
 
         # Create a proxy model
-        self.proxy_model = QSortFilterProxyModel(self)
+        self.proxy_model = CropFilterProxyModel(self)
         self.proxy_model.setSourceModel(self.model)
 
         self.ui.crop_table_view.setModel(self.proxy_model)
@@ -109,6 +110,12 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         # Connect header click signal to sorting function
         header.sectionClicked.connect(self.handle_header_click)
 
+        # Connect filter updates
+        self.ui.store_combo_box.currentTextChanged.connect(self.update_filters)
+        self.ui.season_combo_box.currentTextChanged.connect(self.update_filters)
+        self.ui.fertilizer_combo_box.currentTextChanged.connect(self.update_filters)
+        self.ui.day_spin_box.textChanged.connect(self.update_filters)
+
         if not self.OFFLINE_MODE:
             # Get data from wiki
             self.crops: list[Crop] = get_crops()
@@ -121,8 +128,9 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
             # Populate Settings Panel
             self.ui.fertilizer_combo_box.addItems([obj.name for obj in self.fertilizers])
             self.ui.fertilizer_combo_box.setCurrentText(self.saved_fertilizer)
-
             self.populate_table()
+            self.ui.store_combo_box.setCurrentText(self.saved_store)
+            self.update_filters()
 
         else:
             self.load_table_data()
@@ -136,14 +144,26 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         )
         self.proxy_model.sort(section, self.current_sort_order)
 
+    def update_filters(self):
+        self.proxy_model.store_filter = self.ui.store_combo_box.currentText()
+        self.proxy_model.season_filter = self.ui.season_combo_box.currentText()
+        self.proxy_model.fertilizer_filter = self.ui.fertilizer_combo_box.currentText()
+        self.proxy_model.day_filter = self.ui.day_spin_box.value()
+
+        self.proxy_model.invalidateFilter()
+
     def populate_table(self):
         self.model.clear()
         self.model.setHorizontalHeaderLabels(self.headers)
+        purchase_locations = []
         for i, crop in enumerate(self.crops):
             image_path = os.path.join("local_images", crop.image_name)
             growth_days_str = f"{crop.growth_days}"
             if crop.regrowth_days is not None:
                 growth_days_str += f" (Regrows in {crop.regrowth_days})"
+            for store in crop.purchase_sources:
+                if store not in purchase_locations:
+                    purchase_locations.append(store)
             self.add_row(
                 [
                     QPixmap(image_path),
@@ -157,10 +177,18 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
                     crop.energy_values_by_rarity,
                     crop.health_values_by_rarity
                 ],
-                image_path
+                image_path,
+                crop
             )
+        self.populate_purchase_locations(purchase_locations)
 
-    def add_row(self, data: list, local_path: str):
+    def populate_purchase_locations(self, locations: list[str]):
+        combo_box = self.ui.store_combo_box
+        combo_box.clear()
+        combo_box.addItem("Any")
+        combo_box.addItems(sorted(locations))
+
+    def add_row(self, data: list, local_path: str, crop: Crop):
         row_data = []
         for val in data:
             if isinstance(val, QPixmap):
@@ -174,6 +202,7 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
             else:
                 item = QStandardItem(str(val))
             item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+            item.setData(crop, Qt.UserRole + 1)
             row_data.append(item)
         self.model.appendRow(row_data)
 
@@ -220,6 +249,8 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
                 widget.setCurrentText(self.settings.value(f"{widget_name}_text", "Normal Soil", type=str))
                 if widget_name == "fertilizer_combo_box":
                     self.saved_fertilizer = self.settings.value(f"{widget_name}_text", "Normal Soil", type=str)
+                elif widget_name == "store_combo_box":
+                    self.saved_store = self.settings.value(f"{widget_name}_text", "Any", type=str)
             elif isinstance(widget, QLineEdit):
                 widget.setText(self.settings.value(f"{widget_name}_text", ""))
             elif isinstance(widget, ToggleSwitch):
@@ -252,10 +283,13 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
             # Clear the current model and populate with loaded data
             self.model.clear()
             self.model.setHorizontalHeaderLabels(self.headers)
+            crop_lookup = {crop.name: crop for crop in self.crops}
             for row_data in crops_data:
                 image_path = row_data[0]
                 row_data[0] = QPixmap(image_path)
-                self.add_row(row_data, local_path=image_path)
+                crop_name = row_data[1]
+                crop_obj = crop_lookup.get(crop_name)
+                self.add_row(row_data, local_path=image_path, crop=crop_obj)
 
     def showEvent(self, a0):
         super().showEvent(a0)
