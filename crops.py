@@ -16,10 +16,13 @@ class Crop:
     edible: bool
     multiple_rarities: bool
     used_in_recipe: bool
-    purchase_sources: dict[str:int]
+    purchase_sources: dict[str, int]
     sell_prices: list[int] | None
     energy_values_by_rarity: list[int] | None
     health_values_by_rarity: list[int] | None
+    growing_season: str
+    growth_days: int
+    regrowth_days: int | None
 
 
 def get_crops() -> list[Crop]:
@@ -49,7 +52,7 @@ def get_crops() -> list[Crop]:
         clean_data = [[sub_data for sub_data in data if sub_data.replace("\t", "").replace("\n", "")] for data in
                       table_data if data]
         is_edible = "Inedible" not in clean_data[0]
-        multiple_rarities = len(clean_data[0]) == 16 if is_edible else len(clean_data[0]) == 7
+        multiple_rarities = len(clean_data[0]) in (15, 16) if is_edible else len(clean_data[0]) in (7, 8)
         usable = "used in" in [header.casefold() for header in headers]
         seed_name = clean_data[0][0]
 
@@ -68,11 +71,15 @@ def get_crops() -> list[Crop]:
         else:
             purchase_sources = {}
 
-        sell_prices = clean_data[0][2:6] if multiple_rarities else [clean_data[0][2]]
+        if multiple_rarities:
+            prices = clean_data[1:5]
+        else:
+            prices = [[clean_data[0][2]]]
 
         # Clean up sell prices
-        sell_prices = [int(price.replace("g", "").replace(",", "").replace(" each", "").split(">")[-1]) for price in
-                       sell_prices]
+        sell_prices = [int(price[0].replace("g", "").replace(",", "").replace(" each", "").split(">")[-1]) for price in
+                       prices]
+
         if is_edible:
             if usable:
                 energy_values = list(map(int, clean_data[0][-9:-1:2]))
@@ -83,6 +90,18 @@ def get_crops() -> list[Crop]:
         else:
             energy_values = None
             health_values = None
+
+        # Get growth time values
+        growth_time_data = [d for d in clean_data[-1] if "Total" in d or "Regrowth" in d]
+        growth_days = int(growth_time_data[0].split()[1])
+        regrowth_days = None
+        if len(growth_time_data) > 1:
+            regrowth_days = int(growth_time_data[1].replace(":", " ").split()[1])
+
+        # Get the most recent season
+        season_header = table.find_previous('h2')
+        season_text = season_header.text.strip() if season_header else None
+        growing_season = season_text.replace(" Crops", "") if season_text else None
 
         crops.append(
             Crop(
@@ -97,6 +116,9 @@ def get_crops() -> list[Crop]:
                 sell_prices=sell_prices,
                 energy_values_by_rarity=energy_values,
                 health_values_by_rarity=health_values,
+                growing_season=growing_season,
+                growth_days=growth_days,
+                regrowth_days=regrowth_days,
             )
         )
     return crops

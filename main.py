@@ -2,6 +2,7 @@ import json
 import os
 import sys
 
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QSettings, QSortFilterProxyModel
 from PyQt5.QtGui import QPixmap, QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QApplication, QHeaderView, QComboBox, QLineEdit, QSlider, QWidget, QLabel
@@ -18,11 +19,8 @@ class CustomTitleBar(StandardTitleBar):
 
     def __init__(self, parent):
         super().__init__(parent)
-
         # customize the style of title bar items
-        self.titleLabel.setStyleSheet("""
-        
-        """)
+        self.titleLabel.setStyleSheet("""""")
         self.minBtn.setStyleSheet("""
             TitleBarButton {
                 qproperty-hoverColor: white;
@@ -42,7 +40,6 @@ class CustomTitleBar(StandardTitleBar):
 
 
 class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
-
     OFFLINE_MODE = False
 
     def __init__(self):
@@ -64,9 +61,11 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         self.toggle_switch = ToggleSwitch()
         self.ui.toggle_layout.addRow(QLabel("Day/Night"), self.toggle_switch)
         self.toggle_switch.clicked.connect(
-            lambda: toggle_day_night(QApplication.instance(), self.toggle_switch.is_checked))
+            lambda: toggle_day_night(QApplication.instance(), self.toggle_switch.is_checked)
+        )
         self.toggle_switch.clicked.connect(
-            lambda: self.update_header_buttons(self.toggle_switch.is_checked))
+            lambda: self.update_header_buttons(self.toggle_switch.is_checked)
+        )
 
         # Load settings
         self.saved_fertilizer: str = ""
@@ -91,13 +90,21 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         self.ui.crop_table_view.setModel(self.proxy_model)
         self.ui.crop_table_view.setSelectionBehavior(QHeaderView.SelectRows)
         self.ui.crop_table_view.setSelectionMode(QHeaderView.NoSelection)
-        self.headers = ["Crop Image", "Crop Name", "Seed Name", "Edible", "Purchase Sources", "Sell Price",
-                        "Energy Value", "Health Value"]
+        self.headers = ["Crop Image", "Crop Name", "Seed Name", "Season", "Grow Time", "Edible",
+                        "Purchase Sources", "Sell Price", "Energy Value", "Health Value"]
         self.model.setHorizontalHeaderLabels(self.headers)
 
-        # Stretch the columns to fill the available width
-        header = self.ui.crop_table_view.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.Stretch)
+        table = self.ui.crop_table_view
+        header = table.horizontalHeader()
+
+        # Prevent shrinking smaller than the header text
+        for col in range(header.count()):
+            min_width = header.sectionSizeHint(col)
+            header.resizeSection(col, min_width)
+            header.setMinimumSectionSize(min_width)
+
+        # Allow columns to stretch to fill extra space
+        header.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
 
         # Connect header click signal to sorting function
         header.sectionClicked.connect(self.handle_header_click)
@@ -134,11 +141,16 @@ class MainWindow(FramelessWindow):  # Inherit from FramelessWindow
         self.model.setHorizontalHeaderLabels(self.headers)
         for i, crop in enumerate(self.crops):
             image_path = os.path.join("local_images", crop.image_name)
+            growth_days_str = f"{crop.growth_days}"
+            if crop.regrowth_days is not None:
+                growth_days_str += f" (Regrows in {crop.regrowth_days})"
             self.add_row(
                 [
                     QPixmap(image_path),
                     crop.name,
                     crop.seed_name,
+                    crop.growing_season,
+                    growth_days_str,
                     crop.edible,
                     crop.purchase_sources,
                     crop.sell_prices,
